@@ -47,7 +47,7 @@ npm install
 npm start
 
 # 4. Test API
-# Open browser: http://localhost:3000
+Open browser: http://localhost:3000
 ```
 
 ## 📝 API Endpoints
