@@ -36,8 +36,7 @@
 - **Team Collaboration**: ทีมพัฒนาสามารถแบ่งงานกันทำตามเลเยอร์ได้พร้อมกัน ลดการเกิด conflict
 
 ## 🚀 How to Run
-
-\`\`\`bash
+```bash
 # 1. Clone repository
 git clone [https://github.com/Oracle-ama10/midterm-2568--67543210022-9-.git]
 
@@ -49,7 +48,7 @@ npm start
 
 # 4. Test API
 # Open browser: http://localhost:3000
-\`\`\`
+```
 
 ## 📝 API Endpoints
 [ระบุ API endpoints ทั้งหมด]
