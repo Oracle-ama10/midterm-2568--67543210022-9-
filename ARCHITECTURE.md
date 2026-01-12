@@ -2,7 +2,7 @@
 
 ## C1: System Context Diagram
 
-\`\`\`
+```
 ┌─────────────────────────────────────────────────────┐
 │                    System User                      │
 │             (บรรณารักษ์, สมาชิกห้องสมุด)                │
@@ -21,7 +21,7 @@
 │               SQLite Database                       │
 │                (library.db)                         │
 └─────────────────────────────────────────────────────┘
-\`\`\`
+```
 
 ### Actors
 - **System User**: บรรณารักษ์หรือผู้ดูแลระบบที่ทำหน้าที่จัดการหนังสือและรายการยืม-คืน
@@ -39,7 +39,7 @@
 
 ## C2: Container Diagram - Layered Architecture
 
-\`\`\`
+```
 ┌────────────────────────────────────────────────────────────────┐
 │                        CLIENT (Browser)                        │
 └────────────┬───────────────────────────────────────────────────┘
@@ -90,7 +90,7 @@
               │ - isbn (Unique)         │
               │ - status (available/..) │
               └─────────────────────────┘
-\`\`\`
+```
 
 ---
 
@@ -282,11 +282,11 @@ module.exports = BookRepository;
 
 ## Data Flow: Borrow Book
 
-\`\`\`
+```
 Client → Controller → Service → Repository → Database
          ↓ parse     ↓ validate  ↓ SQL       ↓ update status
          ← response ← ← ← ← ← ← ← ← ← ←
-\`\`\`
+```
 
 **Steps:**
 1. Client ส่ง PATCH request มาที่ /api/books/:id/borrow
@@ -309,4 +309,4 @@ Client → Controller → Service → Repository → Database
 - ข้อมูลไหลลง (Downward flow) จาก Presentation -> Business -> Data
 - Business Layer เป็นส่วนที่ตัดสินใจเกี่ยวกับกฎเกณฑ์สำคัญของห้องสมุด
 - แต่ละ Layer ทำงานอิสระต่อกัน (Low Coupling)
-\`\`\`
+```
