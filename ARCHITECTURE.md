@@ -107,6 +107,40 @@
 - bookController.js: รับข้อมูลจาก Request และเรียกใช้ Service
 - errorHandler.js: แปลง Error ที่เกิดขึ้นเป็น JSON Response
 
+**ตัวอย่างโค้ด:**
+```javascript
+// Controller รับผิดชอบเรื่อง HTTP (req, res)
+class BookController {
+    constructor(bookService) {
+        this.bookService = bookService;
+    }
+
+    // GET /api/books
+    async getAllBooks(req, res) {
+        try {
+            const status = req.query.status; // รับ filter จาก URL
+            const result = await this.bookService.getBooks(status);
+            res.json(result); // ตอบกลับเป็น JSON ให้หน้า UI ไปแสดงผล
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    }
+
+    // PATCH /api/books/:id/borrow
+    async borrowBook(req, res) {
+        try {
+            const { id } = req.params;
+            const updatedBook = await this.bookService.borrowBook(id);
+            res.json(updatedBook);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+}
+
+module.exports = BookController;
+```
+
 **Methods:**
 - getAllBooks(req, res, next): รับ Query String (ถ้ามี) ส่งให้ Service และส่งผลลัพธ์พร้อมสถิติกลับเป็น JSON
 - getBookById(req, res, next): ดึง ID จาก Parameter และส่งข้อมูลหนังสือกลับไป (ส่ง 404 หากไม่พบ)
@@ -133,6 +167,35 @@
 **ไฟล์:**
 - bookService.js: รวม Logic การยืม-คืน และการคำนวณสถิติ
 - bookValidator.js: ตรวจสอบความถูกต้องของ ID, ISBN และฟิลด์ต่างๆ
+
+**ตัวอย่างโค้ด:**
+```javascript
+// Service รับผิดชอบเรื่อง Logic ของระบบห้องสมุด
+class BookService {
+    constructor(bookRepository) {
+        this.bookRepository = bookRepository;
+    }
+
+    async getBooks(status) {
+        // ประมวลผลข้อมูลหรือคำนวณสถิติก่อนส่งให้ Controller
+        return await this.bookRepository.findAll(status);
+    }
+
+    async borrowBook(id) {
+        const book = await this.bookRepository.findById(id);
+        
+        // กฎเหล็ก: ถ้าหนังสือไม่อยู่ จะยืมไม่ได้
+        if (!book || book.status !== 'available') {
+            throw new Error('หนังสือเล่มนี้ไม่ว่างให้ยืมครับ');
+        }
+
+        // ถ้าผ่านกฎ ให้สั่ง Repository ไปอัปเดตฐานข้อมูล
+        return await this.bookRepository.updateStatus(id, 'borrowed');
+    }
+}
+
+module.exports = BookService;
+```
 
 **Methods:**
 - getAllBooks(status): เรียก Repository เพื่อเอาข้อมูลหนังสือ และ คำนวณสถิติ (Statistics) สรุปยอดรวมส่งกลับไปด้วย
@@ -163,6 +226,45 @@
 **ไฟล์:**
 - bookRepository.js: รวมคำสั่ง SQL (INSERT, SELECT, UPDATE, DELETE)
 - connection.js: สร้างและกำหนดค่าเริ่มต้นให้ฐานข้อมูล (Create Table)
+
+**ตัวอย่างโค้ด:**
+```javascript
+// Repository รับผิดชอบเรื่องการจัดการ Database (SQL)
+class BookRepository {
+    constructor(db) {
+        this.db = db;
+    }
+
+    async findAll(status) {
+        return new Promise((resolve, reject) => {
+            let sql = 'SELECT * FROM books';
+            const params = [];
+
+            if (status) {
+                sql += ' WHERE status = ?';
+                params.push(status);
+            }
+
+            this.db.all(sql, params, (err, rows) => {
+                if (err) reject(err);
+                resolve(rows);
+            });
+        });
+    }
+
+    async updateStatus(id, newStatus) {
+        return new Promise((resolve, reject) => {
+            const sql = 'UPDATE books SET status = ? WHERE id = ?';
+            this.db.run(sql, [newStatus, id], function(err) {
+                if (err) reject(err);
+                resolve({ id, status: newStatus });
+            });
+        });
+    }
+}
+
+module.exports = BookRepository;
+```
 
 **Methods:**
 - findAll(status): ดึงข้อมูลหนังสือทั้งหมดจาก Database (รองรับการกรองด้วยสถานะ available หรือ borrowed)

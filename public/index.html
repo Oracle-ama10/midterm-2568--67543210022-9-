@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management - Layered</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Library Management System</h1>
+            <span class="badge">🏗️ Layered Architecture</span>
+        </header>
+        
+        <div class="toolbar">
+            <button class="btn btn-primary" id="add-btn">
+                ➕ Add New Book
+            </button>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">All Books</button>
+                <button class="filter-btn" data-filter="available">Available</button>
+                <button class="filter-btn" data-filter="borrowed">Borrowed</button>
+            </div>
+        </div>
+        
+        <div class="statistics">
+            <div class="stat-card">
+                <h3 id="stat-available">0</h3>
+                <p>Available</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="stat-borrowed">0</h3>
+                <p>Borrowed</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="stat-total">0</h3>
+                <p>Total Books</p>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">Loading books...</div>
+        
+        <div id="book-list" class="book-grid"></div>
+    </div>
+    
+    <!-- Modal -->
+    <div id="book-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add New Book</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form id="book-form">
+                <input type="hidden" id="book-id">
+                
+                <div class="form-group">
+                    <label for="title">Book Title *</label>
+                    <input type="text" id="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="author">Author *</label>
+                    <input type="text" id="author" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="isbn">ISBN *</label>
+                    <input type="text" id="isbn" required>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">💾 Save</button>
+                    <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
